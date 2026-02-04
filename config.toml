@@ -1,0 +1,25 @@
+# Base workday (1 = Monday, 7 = Sunday)
+# Supported formats:
+#   "1-5"
+#   "1,2,3"
+[base]
+workday = "1-5"
+
+
+# Multiple calendar sources are supported
+[calendar]
+source = [
+  # "local_calendar.ics",
+  # "https://example.com/calendar.ics"
+]
+
+[predict]
+# Keywords indicating a working day
+work = ["work"]
+
+# Keywords indicating a non-working day
+rest = ["holiday"]
+
+# If the day contain 'work' and 'rest' at the same time
+# [WorkOverRest, RestOverWork, KeepCurrent, UseLatest]
+priority = "WorkOverRest"
