@@ -24,7 +24,7 @@
 
 use std::{fs::File, io::Read};
 
-use chrono::{DateTime, Local, NaiveDateTime, NaiveTime};
+use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, NaiveTime};
 use clap::{builder::TypedValueParser, Parser};
 
 use crate::conf::Conf;
@@ -141,8 +141,13 @@ impl TypedValueParser for TimestampParser {
             },
             _ => {
                 // Try parsing as date only first (YYYYmmDD)
-                if let Ok(dt) = NaiveDateTime::parse_from_str(value_str, DATE_FORMAT) {
-                    return Ok(dt);
+                if let Ok(dt) = NaiveDate::parse_from_str(value_str, DATE_FORMAT) {
+                    let end_of_day = NaiveTime::from_hms_opt(23, 59, 59)
+                    .ok_or_else(|| clap::Error::raw(
+                        clap::error::ErrorKind::InvalidValue,
+                        "Failed to create today time 23:59:59"
+                    ))?;
+                    return Ok(dt.and_time(end_of_day));
                 }
                 
                 // Try parsing as full timestamp (YYYYmmDDHHMMSS)
